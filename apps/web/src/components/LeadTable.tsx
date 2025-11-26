@@ -9,9 +9,10 @@ import type { Lead } from '../../../shared/mockData';
 
 type Props = {
   data: Lead[];
+  onRowClick?: (lead: Lead) => void;
 };
 
-export const LeadTable = ({ data }: Props) => {
+export const LeadTable = ({ data, onRowClick }: Props) => {
   const columns = useMemo<ColumnDef<Lead>[]>(
     () => [
       { header: 'Name', accessorKey: 'name' },
@@ -42,7 +43,11 @@ export const LeadTable = ({ data }: Props) => {
         </thead>
         <tbody className="divide-y divide-white/5">
           {table.getRowModel().rows.map(row => (
-            <tr key={row.id} className="hover:bg-white/5">
+            <tr
+              key={row.id}
+              className="hover:bg-white/5 cursor-pointer transition-colors"
+              onClick={() => onRowClick?.(row.original)}
+            >
               {row.getVisibleCells().map(cell => (
                 <td key={cell.id} className="px-4 py-3">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

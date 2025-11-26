@@ -1,12 +1,13 @@
 import clsx from 'clsx';
-import { Bell, MoonStar, Search, Sun, UserCircle2 } from 'lucide-react';
+import { Bell, Menu, MoonStar, Search, Sun, UserCircle2 } from 'lucide-react';
 
 type Props = {
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
+  onToggleMenu?: () => void;
 };
 
-export const TopBar = ({ theme, onToggleTheme }: Props) => {
+export const TopBar = ({ theme, onToggleTheme, onToggleMenu }: Props) => {
   const isLight = theme === 'light';
   return (
     <header
@@ -15,17 +16,33 @@ export const TopBar = ({ theme, onToggleTheme }: Props) => {
         isLight ? 'border-slate-200 bg-white/80' : 'border-white/5 bg-black/30'
       )}
     >
-      <div
-        className={clsx(
-          'flex w-full max-w-lg items-center gap-3 rounded-full px-4 py-2',
-          isLight ? 'bg-slate-100 border border-slate-200 text-[#003b5c]' : 'border border-white/10'
+      <div className="flex items-center gap-3">
+        {/* Mobile Menu Button */}
+        {onToggleMenu && (
+          <button
+            onClick={onToggleMenu}
+            className={clsx(
+              'lg:hidden rounded-full border p-2 transition',
+              isLight ? 'border-slate-200 text-[#003b5c] hover:border-slate-400' : 'border-white/10 hover:border-neon-cyan'
+            )}
+            aria-label="Toggle menu"
+          >
+            <Menu size={20} />
+          </button>
         )}
-      >
-        <Search size={18} className="text-gray-500" />
-        <input
-          className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-500"
-          placeholder="Search leads, campaigns, automation..."
-        />
+
+        <div
+          className={clsx(
+            'flex w-full max-w-lg items-center gap-3 rounded-full px-4 py-2',
+            isLight ? 'bg-slate-100 border border-slate-200 text-[#003b5c]' : 'border border-white/10'
+          )}
+        >
+          <Search size={18} className="text-gray-500" />
+          <input
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-gray-500"
+            placeholder="Search leads, campaigns, automation..."
+          />
+        </div>
       </div>
       <div className="ml-4 flex items-center gap-3">
         <button
@@ -49,7 +66,7 @@ export const TopBar = ({ theme, onToggleTheme }: Props) => {
         </button>
         <div
           className={clsx(
-            'flex items-center gap-2 rounded-full border px-3 py-2 text-sm',
+            'hidden sm:flex items-center gap-2 rounded-full border px-3 py-2 text-sm',
             isLight ? 'border-slate-200 text-[#003b5c]' : 'border-white/10'
           )}
         >

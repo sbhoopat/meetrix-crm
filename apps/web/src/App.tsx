@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { TopBar } from './components/TopBar';
 import { Dashboard } from './pages/Dashboard';
@@ -17,13 +18,14 @@ import { WhatsApp } from './pages/WhatsApp';
 const Shell = () => {
   const { theme, toggleTheme } = useThemeMode();
   const isLight = theme === 'light';
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className={`flex min-h-screen ${isLight ? 'bg-slate-50 text-[#003b5c]' : 'bg-midnight text-gray-100'}`}>
-      <Sidebar theme={theme} />
+    <div className={`flex min-h-screen ${isLight ? 'bg-white text-slate-900' : 'bg-midnight text-gray-100'}`}>
+      <Sidebar theme={theme} isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} />
       <div className="flex flex-1 flex-col">
-        <TopBar theme={theme} onToggleTheme={toggleTheme} />
-        <main className={`flex-1 overflow-y-auto px-4 py-6 sm:px-6 ${isLight ? 'bg-white/70' : 'bg-gradient-to-b from-slate via-midnight'}`}>
+        <TopBar theme={theme} onToggleTheme={toggleTheme} onToggleMenu={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+        <main className={`flex-1 overflow-y-auto px-4 py-6 sm:px-6 ${isLight ? 'bg-white' : 'bg-gradient-to-b from-slate via-midnight'}`}>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/search" element={<Search />} />

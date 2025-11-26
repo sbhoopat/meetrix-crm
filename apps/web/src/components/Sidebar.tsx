@@ -12,7 +12,8 @@ import {
   BarChart3,
   Workflow,
   Zap,
-  PlugZap
+  PlugZap,
+  X
 } from 'lucide-react';
 
 const navItems = [
@@ -31,43 +32,49 @@ const navItems = [
 
 type Props = {
   theme: 'light' | 'dark';
+  isOpen?: boolean;
+  onClose?: () => void;
 };
 
-export const Sidebar = ({ theme }: Props) => {
+export const Sidebar = ({ theme, isOpen = false, onClose }: Props) => {
   const isLight = theme === 'light';
   const logoSrc = '/Media.png';
   const [logoFailed, setLogoFailed] = useState(false);
-  return (
-    <aside
-      className={clsx(
-        'hidden w-72 flex-col border-r p-4 backdrop-blur lg:flex',
-        isLight ? 'bg-white/90 border-slate-100 text-[#003b5c]' : 'bg-black/40 border-white/5 text-gray-100'
-      )}
-    >
-      <div className="mb-6 flex items-center gap-3">
-        <div className="relative h-12 w-12 overflow-hidden rounded-2xl border border-white/10 bg-white/10">
-          <img
-            src={logoSrc}
-            alt="Meetrix logo"
-            className={clsx('h-full w-full object-cover', logoFailed && 'hidden')}
-            onError={() => setLogoFailed(true)}
-          />
-          {logoFailed && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-neon-cyan/60 to-neon-purple/60 text-xs font-semibold tracking-wide text-white">
-              M
-            </div>
-          )}
+
+  const sidebarContent = (
+    <>
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="relative h-12 w-12 overflow-hidden rounded-2xl border border-white/10 bg-white/10">
+            <img
+              src={logoSrc}
+              alt="Meetrix logo"
+              className={clsx('h-full w-full object-cover', logoFailed && 'hidden')}
+              onError={() => setLogoFailed(true)}
+            />
+            {logoFailed && (
+              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-neon-cyan/60 to-neon-purple/60 text-xs font-semibold tracking-wide text-white">
+                M
+              </div>
+            )}
+          </div>
+          <div>
+            <p className="font-bold tracking-wide">TeleCRM</p>
+            <p className="text-xs text-gray-400">Telecom & Sales Ops</p>
+          </div>
         </div>
-        <div>
-          <p className="font-bold tracking-wide">TeleCRM</p>
-          <p className="text-xs text-gray-400">Telecom & Sales Ops</p>
-        </div>
+        {onClose && (
+          <button onClick={onClose} className="lg:hidden p-2 hover:bg-white/10 rounded-lg">
+            <X size={20} />
+          </button>
+        )}
       </div>
       <nav className="flex flex-1 flex-col gap-1">
         {navItems.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
+            onClick={onClose}
             className={({ isActive }) =>
               clsx(
                 'flex items-center gap-3 rounded-xl border px-4 py-3 text-sm transition',
@@ -94,7 +101,41 @@ export const Sidebar = ({ theme }: Props) => {
         <p className={clsx('mb-2 font-semibold', isLight ? 'text-[#003b5c]' : 'text-white')}>Pro Tips</p>
         <p>Use workflows + WhatsApp Automation to reduce manual handoffs.</p>
       </div>
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Desktop Sidebar */}
+      <aside
+        className={clsx(
+          'hidden w-72 flex-col border-r p-4 backdrop-blur lg:flex',
+          isLight ? 'bg-white/90 border-slate-100 text-[#003b5c]' : 'bg-black/40 border-white/5 text-gray-100'
+        )}
+      >
+        {sidebarContent}
+      </aside>
+
+      {/* Mobile Sidebar Overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={onClose}
+          />
+          {/* Sidebar */}
+          <aside
+            className={clsx(
+              'absolute left-0 top-0 bottom-0 w-72 flex flex-col border-r p-4 backdrop-blur',
+              isLight ? 'bg-white border-slate-100 text-[#003b5c]' : 'bg-gray-900 border-white/5 text-gray-100'
+            )}
+          >
+            {sidebarContent}
+          </aside>
+        </div>
+      )}
+    </>
   );
 };
 
