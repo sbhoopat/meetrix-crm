@@ -6,4 +6,4 @@ build/
 .DS_Store
 expo-env.d.ts
 snaps/
-
+package-lock.json
